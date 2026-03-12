@@ -39,6 +39,63 @@
 </div>
 
 <script>
+    function initWindow(win) {
+        const titleBar = win.querySelector('.window-title');
+        const btnMax = win.querySelector('.btn-maximize');
+        const btnClose = win.querySelector('.btn-close');
+
+        let isMoving = false, offX = 0, offY = 0, maximized = false, prev={};
+
+        titleBar.addEventListener('mousedown', e => {
+            if (e.target.closest('.window-buttons')) return;
+            isMoving = true;
+            offX = e.clientX - win.offsetLeft;
+            offY = e.clientY - win.offsetTop;
+            win.style.zIndex = 1000;
+            document.onmousemove = ev => {
+                if (isMoving && !maximized) {
+                    win.style.left = (ev.clientX - offX) + 'px';
+                    win.style.top = (ev.clientY - offY) + 'px';
+                }
+            };
+            document.onmouseup = () => { isMoving = false; document.onmousemove = null; document.onmouseup = null;};
+        });
+
+        btnMax?.addEventListener('click', () => {
+            if (!maximized) {
+                prev = { left: win.style.left || win.offsetLeft + 'px', top: win.style.top || win.offsetTop + 'px', width: win.style.width, height: win.style.height };
+                Object.assign(win.style, { left: '0', top: '0', width: '100%', height: '100%'});
+                maximized = true;
+            } else {
+                Object.assign(win.style, { left: prev.left, top: prev.top, with: prev.width, height: prev.height })
+                maximized = false;
+            }
+        });
+
+        btnClose?.addEventListener('click', () => win.remove());
+    }
+
+    function createWindow(id, title = 'Nuova finestra', content = '') {
+        const win = document.createElement('div');
+        win.className = 'window';
+        win.id = id;
+        win.style.left = '120px';
+        win.style.top = '120px';
+        win.innerHTML = `
+            <div class="window-title">
+                <span>${title}</span>
+                <div class="window-buttons">
+                    <button class="btn-maximize">□</button>
+                    <button class="btn-close">X</button>
+                </div>
+            </div>
+            <div class="window-content">${content}</div>
+        `;
+        document.body.appendChild(win);
+        initWindow(win);
+        return win;
+    }
+
     const windows = document.querySelectorAll('.window');
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -46,13 +103,11 @@
 
         document.querySelectorAll('.icon').forEach(icon => {
             icon.addEventListener('dblclick', () => {
-                const targetId = (icon.dataset.target || 'window1').trim();
-                console.log('dbclick target:', JSON.stringify(targetId));
-                const winEl = document.getElementById(targetId);
-                console.log('fnd element:', winEl);
+                const targetId = (icon.dataset.target || `window-${Date.now()}`).trim();
+                let winEl = document.getElementById(targetId);
                 if (!winEl) {
-                    console.error('finestra non trovata', targetId);
-                    return;
+                    const title = icon.querySelector('span')?.textContent || targetId;
+                    winEl = createWindow(targetId, title, 'Contenuto di ' + title);
                 }
                 winEl.style.display = 'block';
                 winEl.style.zIndex = 1000;
