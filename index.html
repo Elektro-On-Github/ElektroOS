@@ -8,10 +8,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
+<img src="w7.jpg" class="wallpaper">
+<div class="window" id="window1">
+    <div class="window-title">Finestra 1</div>
+    <div class="window-content">Contenuto</div>
+</div>
+
 <div class="bottombar">
     <img src="start.png" class="start-btn">
     <div class="separator"></div>
     <img src="ie.png" class="app-btn">
 </div>
-<img src="w7.jpg" class="wallpaper">
+
+<script>
+    const windows = document.querySelectorAll('.window')
+
+    windows.forEach(win => {
+        const titleBar = win.querySelector('.window-title');
+        let isMoving = false;
+        let offsetX = 0, offsetY = 0;
+
+        titleBar.addEventListener('mousedown', (e) => {
+            isMoving = true;
+            offsetX = e.clientX - offsetLeft;
+            offsetY = e.clientY - offsetTop;
+            win.style.zIndex = 100;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isMoving) {
+                win.style.left = (e.clientX - offsetX) + 'px';
+                win.style.top = (e.clientY - offsetY) + 'px';
+            }
+        });
+        document.addEventListener('mouseup', () => {
+            isMoving = false;
+        });
+    });
+</script>
 </html>
