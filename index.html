@@ -10,7 +10,14 @@
 </head>
 <img src="w7.jpg" class="wallpaper">
 <div class="window" id="window1">
-    <div class="window-title">Finestra 1</div>
+    <div class="window-title">
+        <span>Finestra 1</span>
+        <div class="window-buttons">
+            <button class="btn-minimize">_</button>
+            <button class="btn-maximize">□</button>
+            <button class="btn-close">X</button>
+        </div>
+    </div>
     <div class="window-content">Contenuto</div>
 </div>
 
@@ -25,24 +32,71 @@
 
     windows.forEach(win => {
         const titleBar = win.querySelector('.window-title');
+        const btnMinimize = win.querySelector('.btn-minimize');
+        const btnMaximize = win.querySelector('.btn-maximize');
+        const btnClose = win.querySelector('.btn-close');
+
         let isMoving = false;
         let offsetX = 0, offsetY = 0;
+        let isMaximized = false;
+        let previousState = {}
 
+        //dragga
         titleBar.addEventListener('mousedown', (e) => {
-            isMoving = true;
-            offsetX = e.clientX - offsetLeft;
-            offsetY = e.clientY - offsetTop;
-            win.style.zIndex = 100;
+            if (e.target.classList.contains('.window-buttons') ||
+                e.target.classList.contains('.btn-minimize') ||
+                e.target.classList.contains('btn-maximize') ||
+                e.target.classList.contains('.btn-close')) {
+                    return;
+                }
+                isMoving = true;
+                offsetX = e.clientX - win.offsetLeft;
+                offsetY = e.clientY - win.offsetTop;
+                win.style.zIndex = 100;
         });
 
         document.addEventListener('mousemove', (e) => {
-            if (isMoving) {
+            if (isMoving && !isMaximized) {
                 win.style.left = (e.clientX - offsetX) + 'px';
                 win.style.top = (e.clientY - offsetY) + 'px';
             }
         });
+
         document.addEventListener('mouseup', () => {
             isMoving = false;
+        });
+
+        //minimize
+        btnMinimize.addEventListener('click', () => {
+            win.style.display = 'none';
+        });
+
+        //mxmz and restore
+        btnMaximize.addEventListener('click', () => {
+            if (!isMaximized) {
+                previousState = {
+                    left: win.style.left,
+                    top: win.style.top,
+                    width: win.style.width,
+                    height: win.style.height
+                };
+                win.style.left = '0';
+                win.style.top = '0';
+                win.style.width = '100%'
+                win.style.height = '100%';
+                isMaximized = true;
+            } else {
+                win.style.left = previousState.left;
+                win.style.top = previousState.top;
+                win.style.width = previousState.width;
+                win.style.height = previousState.height;
+                isMaximized = false;
+            }
+        });
+
+        //close
+        btnClose.addEventListener('click', () => {
+            win.remove();
         });
     });
 </script>

@@ -62,6 +62,7 @@ body {
     top: 100px;
     z-index: 100;
     backdrop-filter: blur(10px);
+    border-radius: 6px;
 }
 
 .window-title {
@@ -73,10 +74,31 @@ body {
     display: flex;
     align-items: center;
     user-select: none;
+    justify-content: space-between;
 }
 
 .window-content {
     padding: 15px;
     height: calc(100% - 48px);
     overflow: auto;
+}
+
+.window-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.window-buttons button {
+    width: 32px;
+    height: 32px;
+    background: #0078d4a2;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.window-buttons button:hover {
+    background: #005a9e;
 }
