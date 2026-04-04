@@ -63,6 +63,42 @@ function makeDraggable(win) {
   });
 }
 
+// Resize per finestre stile Windows 7
+function makeResizable(win) {
+  let isResizing = false, startX = 0, startY = 0, startWidth = 0, startHeight = 0;
+  const resizeHandle = win.querySelector('.resize-handle');
+  if (!resizeHandle) return;
+  
+  resizeHandle.style.cursor = 'nwse-resize';
+  resizeHandle.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    isResizing = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = win.getBoundingClientRect();
+    startWidth = rect.width;
+    startHeight = rect.height;
+    win.style.zIndex = 10001;
+    document.body.style.userSelect = 'none';
+  });
+  
+  document.addEventListener('mousemove', function(e) {
+    if (!isResizing) return;
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+    const newWidth = Math.max(200, startWidth + deltaX);
+    const newHeight = Math.max(100, startHeight + deltaY);
+    win.style.width = newWidth + 'px';
+    win.style.height = newHeight + 'px';
+    win.style.maxWidth = 'none';
+  });
+  
+  document.addEventListener('mouseup', function() {
+    isResizing = false;
+    document.body.style.userSelect = '';
+  });
+}
+
 function createWindow({id, title, content, icon}) {
   // Se già esiste, porta in primo piano
   let existing = document.getElementById(id);
@@ -77,7 +113,10 @@ function createWindow({id, title, content, icon}) {
   win.style.position = 'absolute';
   win.style.left = Math.floor(Math.random()*200+100) + 'px';
   win.style.top = Math.floor(Math.random()*100+80) + 'px';
-  win.style.maxWidth = '400px';
+  win.style.width = '450px';
+  win.style.height = '400px';
+  win.style.display = 'flex';
+  win.style.flexDirection = 'column';
   win.innerHTML = `
     <div class="title-bar drag-handle">
         <div class="title-bar-text">${icon ? `<img src='${icon}' style='height:16px;vertical-align:middle;margin-right:6px;'>` : ''}${title}</div>
@@ -87,22 +126,23 @@ function createWindow({id, title, content, icon}) {
             <button class="btn-close" aria-label="Close"></button>
         </div>
     </div>
-    <div class="window-body has-space">${content}</div>
+    <div class="window-body has-space" style="flex: 1; overflow: auto; display: flex; flex-direction: column;">${content}</div>
+    <div class="resize-handle" style="position: absolute; width: 15px; height: 15px; bottom: 0; right: 0; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, #666 50%); opacity: 0.5;"></div>
   `;
   document.getElementById('windows-container').appendChild(win);
   makeDraggable(win);
+  makeResizable(win);
   // Chiudi
   win.querySelector('.btn-close').onclick = () => win.remove();
   // Maximize/Restore
   let isMax = false, prev = {};
   win.querySelector('.btn-max').onclick = function() {
     if (!isMax) {
-      prev = {left: win.style.left, top: win.style.top, width: win.style.width, height: win.style.height, maxWidth: win.style.maxWidth};
+      prev = {left: win.style.left, top: win.style.top, width: win.style.width, height: win.style.height};
       win.style.left = '0px';
       win.style.top = '0px';
       win.style.width = '100vw';
       win.style.height = '100vh';
-      win.style.maxWidth = 'none';
       win.style.zIndex = 10001;
       isMax = true;
     } else {
@@ -110,7 +150,6 @@ function createWindow({id, title, content, icon}) {
       win.style.top = prev.top;
       win.style.width = prev.width;
       win.style.height = prev.height;
-      win.style.maxWidth = prev.maxWidth;
       isMax = false;
     }
   };
@@ -126,7 +165,7 @@ function openIEWindow() {
     id: 'window-ie',
     title: 'Internet Explorer',
     icon: 'ie.png',
-    content: `<iframe src='https://www.example.com' style='width:100%;height:300px;border:0;'></iframe>`
+    content: `<iframe src='https://www.wikipedia.com' style='width:100%;height:100%;border:0;flex:1;'></iframe>`
   });
 }
 
