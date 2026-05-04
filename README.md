@@ -1,29 +1,27 @@
 # ElektroOS - Windows 7 Web OS
 
-## Specifiche Tecniche
+## Technical Specifications
 
-- **Lingua**: JavaScript vanilla (nessun framework)
-- **CSS**: Pure CSS3 con animazioni e transizioni
-- **Browser Support**: Chrome, Firefox, Edge (moderni)
-- **Responsive**: Si adatta a diverse risoluzioni
-- **Performance**: Ottimizzato con transition e animation CSS
+- **Language**: Vanilla JavaScript (no frameworks)
+- **CSS**: Pure CSS3 with animations and transitions
+- **Browser Support**: Modern Chrome, Firefox, Edge
+- **Responsive**: Adapts to different screen resolutions
+- **Performance**: Optimized using CSS transitions and animations
 
-
-## Colori Aero
+## Aero Colors
 
 - **Taskbar**: Gradient #c8d3e0 → #7da8d1
 - **Window Title**: #4580c4 (base Aero blue)
-- **Glass Effect**: Blur 4px + Trasparenza
-- **Glow Color**: #5dc4f0 (azzurro luminoso)
-
+- **Glass Effect**: 4px blur + transparency
+- **Glow Color**: #5dc4f0 (bright light blue)
 
 ## Technical Stack
 
-- **HTML5**: Struttura semantica
-- **CSS3**: Animazioni, gradients, filters, backdrop-filter
+- **HTML5**: Semantic structure
+- **CSS3**: Animations, gradients, filters, backdrop-filter
 - **JavaScript ES6+**: Event handling, DOM manipulation
-- **7.css**: Framework CSS Windows 7 di khang-nd
+- **7.css**: Windows 7 CSS framework by khang-nd
 
 ---
 
--- Per questo progetto e' stata utilizzata l'AI
+-- This project was created using a bit of AI 
